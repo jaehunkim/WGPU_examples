@@ -1,4 +1,4 @@
-use wasm_examples::run;
+use wasm_example1::run;
 
 fn main() {
     run();

@@ -13,13 +13,16 @@ pub fn run() {
     cfg_if::cfg_if! {
         if #[cfg(target_arch = "wasm32")] {
             std::panic::set_hook(Box::new(console_error_panic_hook::hook));
-            console_log::init_with_level(log::Level::Warn).expect("Couldn't initialize logger");
+            //console_log::init_with_level(log::Level::Warn).expect("Couldn't initialize logger");
+            wasm_logger::init(wasm_logger::Config::default());
         } else {
             env_logger::init();
         }
     }
     let event_loop = EventLoop::new().unwrap();
     let window = WindowBuilder::new().build(&event_loop).unwrap();
+
+    log::info!("INFO");
 
     #[cfg(target_arch = "wasm32")]
     {
@@ -40,7 +43,7 @@ pub fn run() {
             .expect("Couldn't append canvas to document body.");
     }
 
-    event_loop.run(move |event, control_flow| match event {
+    let _ = event_loop.run(move |event, control_flow| match event {
         Event::WindowEvent {
             ref event,
             window_id,
