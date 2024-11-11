@@ -3,8 +3,9 @@ use wasm_example2::run;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
-pub fn main() {
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+pub fn startup() {
     wasm_logger::init(wasm_logger::Config::default());
 
     log::info!("Starting WASM Example 2");

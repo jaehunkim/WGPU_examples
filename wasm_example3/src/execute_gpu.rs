@@ -4,16 +4,8 @@ use wgpu::util::DeviceExt;
 // Indicates a u32 overflow in an intermediate Collatz value
 const OVERFLOW: u32 = 0xffffffff;
 
+#[cfg_attr(test, allow(dead_code))]
 pub async fn run() {
-    wasm_logger::init(wasm_logger::Config::default());
-
-    log::info!("Starting WASM Example 2");
-
-    log::debug!(
-        "Enabled backends: {:?}",
-        wgpu::Instance::enabled_backend_features()
-    );
-
     let numbers = if std::env::args().len() <= 2 {
         let default = vec![1, 2, 3, 4];
         println!("No numbers were provided, defaulting to {default:?}");
@@ -184,3 +176,20 @@ async fn execute_gpu_inner(
         panic!("failed to run compute on gpu!")
     }
 }
+
+pub fn main() {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        env_logger::init();
+        pollster::block_on(run());
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        std::panic::set_hook(Box::new(console_error_panic_hook::hook));
+        console_log::init().expect("could not initialize logger");
+        wasm_bindgen_futures::spawn_local(run());
+    }
+}
+
+#[cfg(test)]
+mod tests;
