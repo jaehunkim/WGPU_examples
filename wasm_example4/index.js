@@ -10,31 +10,19 @@ async function initializeWebGPU() {
   Object.assign(globalThis, dawn.globals);
   const gpuInstance = dawn.create([]);
 
-  // Navigator 설정
   class Navigator {
     get gpu() {
       return gpuInstance;
     }
   }
 
-  // Window와 전역 객체 설정
   const navigator = new Navigator();
   
   globalThis.navigator = navigator;
-  globalThis.window = { 
+  globalThis.Window = { 
     navigator,
-    get gpu() { 
-      return gpuInstance; 
-    }
   };
   
-  globalThis.WorkerGlobalScope = {
-    navigator,
-    self: globalThis
-  };
-  
-  // global 객체에도 복사
-  Object.assign(global, globalThis);
   try {
     const adapter = await gpuInstance.requestAdapter();
     if (!adapter) throw new Error('No adapter found');
@@ -42,7 +30,7 @@ async function initializeWebGPU() {
     console.log('GPU Device created:', device);
 
     const wasm = await import('wasm_example3');
-    await wasm.greet();  // greet()가 Promise를 반환한다고 가정
+    await wasm.greet();
     
     await delay(100);
     device.destroy();
