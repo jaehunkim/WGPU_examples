@@ -17,6 +17,15 @@ pub async fn run() {
             .collect()
     };
 
+    get_browser_gpu_property();
+
+    // let instance = wgpu::Instance::default();
+
+    // // `request_adapter` instantiates the general connection to the GPU
+    // let adapter = instance
+    //     .request_adapter(&wgpu::RequestAdapterOptions::default())
+    //     .await.unwrap();
+
     let steps = execute_gpu(&numbers).await.unwrap();
 
     let disp_steps: Vec<String> = steps
